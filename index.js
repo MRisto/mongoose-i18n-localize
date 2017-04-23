@@ -7,8 +7,8 @@ function ArrNoDupe(a) {
     return r;
 }
 module.exports = function(schema, options) {
-	var options_locales = ArrNoDupe(options.locales||[])
-	;
+	var options_locales = ArrNoDupe(options.locales||[]);
+    var default_locale = (options||{}).defaultLocale !== undefined? (options||{}).defaultLocale: null;
 	var addLocales = function(pathname, schema) {
 		var instance = schema.paths[pathname].instance;
 		var config = schema.paths[pathname].options;
@@ -18,7 +18,13 @@ module.exports = function(schema, options) {
 			schema.remove(pathname);
 
 			options_locales.forEach(function(locale) {
-				schema.path(pathname + '.' + locale, config);
+                if(default_locale !== null && config.required === true && default_locale !== locale){
+                    var configWithoutRequired = _.cloneDeep(config);
+                    delete configWithoutRequired.required;
+                        schema.path(pathname + '.' + locale, configWithoutRequired);
+                }else{
+                    schema.path(pathname + '.' + locale, config);
+                }
 			});
 		}
 	};
