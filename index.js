@@ -1,5 +1,7 @@
 /* jshint node: true */
 'use strict';
+var _ = require('lodash');
+
 function ArrNoDupe(a) {
     var temp = {}, r = [], i = 0, k;
     for (i ; i < a.length; i++) {temp[a[i]] = true;}
